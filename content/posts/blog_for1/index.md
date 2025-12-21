@@ -2,6 +2,7 @@
 title: "拾语"
 date: 2025-12-20 12:00:00
 draft: false
+author: "ZdeEcf"
 categories: ["随笔"]
 tags: ["随笔"]
 # featureImage 请确保图片确实存在于 content/posts/blog_for1/ 目录下

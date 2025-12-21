@@ -1,53 +1,50 @@
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
+---
+title: "友链"
+layout: "simple"
+menu:
+  main:
+    weight: 40
 
-  <a href="https://gohugo.io/" target="_blank" class="group no-underline">
-    <div class="h-full p-5 border border-neutral-200/60 rounded-2xl bg-white dark:bg-neutral-900 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl hover:border-pink-300 hover:-translate-y-1 hover:bg-pink-50/30 dark:hover:bg-pink-900/10 dark:hover:border-pink-700">
-      <div class="flex items-center gap-4 mb-3">
-        <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-pink-100 text-2xl dark:bg-pink-900/50 group-hover:scale-110 transition-transform duration-300">
-          ⚡️
-        </div>
-        <div>
-           <h3 class="font-bold text-lg m-0 text-neutral-800 dark:text-neutral-200 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">Hugo</h3>
-           <span class="text-xs font-mono text-neutral-400">Framework</span>
-        </div>
+---
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+
+  <a href="https://gohugo.io/" class="no-underline group relative overflow-hidden rounded-2xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 hover:shadow-lg transition-all">
+    <div class="h-2 w-full bg-gradient-to-r from-pink-500 to-rose-500"></div>
+    <div class="p-5">
+      <div class="flex justify-between items-start">
+        <h3 class="font-bold text-xl m-0 text-neutral-800 dark:text-neutral-100">Hugo</h3>
+        <span class="text-3xl grayscale group-hover:grayscale-0 transition-all duration-500">⚡️</span>
       </div>
-      <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed m-0">
+      <div class="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
         你值得拥有
-      </p>
+      </div>
     </div>
   </a>
 
-  <a href="https://github.com/ZZ-003" target="_blank" class="group no-underline">
-    <div class="h-full p-5 border border-neutral-200/60 rounded-2xl bg-white dark:bg-neutral-900 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl hover:border-blue-300 hover:-translate-y-1 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 dark:hover:border-blue-700">
-      <div class="flex items-center gap-4 mb-3">
-        <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-100 text-2xl dark:bg-blue-900/50 group-hover:scale-110 transition-transform duration-300">
-          🐱
-        </div>
-        <div>
-           <h3 class="font-bold text-lg m-0 text-neutral-800 dark:text-neutral-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">GitHub</h3>
-           <span class="text-xs font-mono text-neutral-400">Code</span>
-        </div>
+  <a href="https://github.com/ZZ-003" class="no-underline group relative overflow-hidden rounded-2xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 hover:shadow-lg transition-all">
+    <div class="h-2 w-full bg-gradient-to-r from-slate-700 to-slate-900"></div>
+    <div class="p-5">
+      <div class="flex justify-between items-start">
+        <h3 class="font-bold text-xl m-0 text-neutral-800 dark:text-neutral-100">GitHub</h3>
+        <span class="text-3xl grayscale group-hover:grayscale-0 transition-all duration-500">🐱</span>
       </div>
-      <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed m-0">
+      <div class="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
         记得一键三连
-      </p>
+      </div>
     </div>
   </a>
 
-  <a href="mailto:1397866418@qq.com" class="group no-underline">
-    <div class="h-full p-5 border border-neutral-200/60 rounded-2xl bg-white dark:bg-neutral-900 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl hover:border-purple-300 hover:-translate-y-1 hover:bg-purple-50/30 dark:hover:bg-purple-900/10 dark:hover:border-purple-700">
-      <div class="flex items-center gap-4 mb-3">
-        <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-purple-100 text-2xl dark:bg-purple-900/50 group-hover:scale-110 transition-transform duration-300">
-          🐧
-        </div>
-        <div>
-           <h3 class="font-bold text-lg m-0 text-neutral-800 dark:text-neutral-200 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">QQ</h3>
-           <span class="text-xs font-mono text-neutral-400">Contact</span>
-        </div>
+  <a href="mailto:1397866418@qq.com" class="no-underline group relative overflow-hidden rounded-2xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 hover:shadow-lg transition-all">
+    <div class="h-2 w-full bg-gradient-to-r from-blue-400 to-cyan-400"></div>
+    <div class="p-5">
+      <div class="flex justify-between items-start">
+        <h3 class="font-bold text-xl m-0 text-neutral-800 dark:text-neutral-100">QQ</h3>
+        <span class="text-3xl grayscale group-hover:grayscale-0 transition-all duration-500">🐧</span>
       </div>
-      <p class="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed m-0">
-        联系我 (点击直接发送邮件)
-      </p>
+      <div class="mt-4 text-sm text-neutral-500 dark:text-neutral-400">
+        联系我<br>点击此处发送邮件。
+      </div>
     </div>
   </a>
 

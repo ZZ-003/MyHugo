@@ -6,8 +6,6 @@ menu:
     weight: 40
 ---
 
-这里是一些我很喜欢的网站和工具。
-
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
 
   <a href="https://gohugo.io/" target="_blank" class="no-underline">
@@ -47,3 +45,5 @@ menu:
   </a>
 
 </div>
+
+私我添加网站

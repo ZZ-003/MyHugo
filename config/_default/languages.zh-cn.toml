@@ -1,0 +1,19 @@
+languageCode = "zh-cn"
+languageName = "简体中文"
+
+title = "ZdeEcf's Blog"
+# subtitle = "记录生活与技术" <--- 这行没用，删掉，下面有解释
+
+
+
+[params.author]
+  name = "ZdeEcf"
+  image = "./avatar.jpg"
+  headline = "Waiting for the stone to bloom in the ribs"
+  bio = "爱你老己"
+
+  # 图标配置
+  links = [
+    { email = "mailto:1397866418@qq.com" },
+    { github= "https://github.com/ZZ-003" }
+  ]

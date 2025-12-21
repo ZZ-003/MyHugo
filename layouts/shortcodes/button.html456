@@ -1,0 +1,18 @@
+<a href="{{ .Get "link" }}" target="_blank" class="custom-button">
+    {{ .Inner }}
+</a>
+
+<style>
+.custom-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+.custom-button:hover {
+    background-color: #0056b3;
+}
+</style>

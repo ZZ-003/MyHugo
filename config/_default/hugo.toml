@@ -1,0 +1,30 @@
+# hugo.toml
+
+# --- 核心修复 ---
+# 1. 必须设为 false，否则 CSS 路径会乱
+relativeURLs = false
+# 2. 保持 false
+uglyURLs = false
+# 3. BaseURL 留空或者是 "/" 都可以，建议如下设置让 Vercel 自动适配
+baseURL = "/"
+
+languageCode = "zh-cn"
+defaultContentLanguage = "zh-cn"
+title = "欢迎来到my博客"
+
+# 这一行是灵魂，告诉Hugo去 themes 文件夹找 congo
+theme = "congo"
+
+# [module] 及其之后的内容保持不变...
+[module]
+  [module.hugoVersion]
+    extended = true
+    min = "0.110.0"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]

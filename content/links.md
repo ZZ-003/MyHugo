@@ -6,7 +6,7 @@ menu:
     weight: 40
 ---
 
-这里是一些我很喜欢的网站和工具。
+
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
 
@@ -41,7 +41,7 @@ menu:
         <h3 class="font-bold text-lg m-0 text-primary-600 dark:text-primary-400">QQ</h3>
       </div>
       <p class="text-sm text-neutral-500 dark:text-neutral-400 m-0">
-        1397866418 (点击发邮件)
+        联系我(点击发邮件)
       </p>
     </div>
   </a>

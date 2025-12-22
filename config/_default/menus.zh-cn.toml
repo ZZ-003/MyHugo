@@ -31,6 +31,11 @@
 #  weight = 40
 
 [[main]]
+  name = "友人帐"     
+  pageRef = "friends"  
+  weight = 50   
+
+[[main]]
   identifier = "search"
   weight = 99
   [main.params]

@@ -27,7 +27,6 @@ summary: "Learning of Docker"
 
 ​	只要容器处于 **运行状态**，且镜像内包含 **Shell 解析器**（如 `/bin/sh` 或 `/bin/bash`），就可以使用 `docker exec` 进入其中，像个操作系统一样。
 
-+++
 
 ### 二、Image 镜像
 
@@ -43,7 +42,6 @@ summary: "Learning of Docker"
 
 4、`docker rmi ID/镜像名`：删除镜像
 
-+++
 
 ### 三、Container 容器
 
@@ -52,47 +50,43 @@ summary: "Learning of Docker"
 ​	**以下的 可选参数 无先后顺序之分**
 
 - `-d` ：后台运行	
-	- `docker run -d nginx`
+	`docker run -d nginx`
 
 
 - `--name`：命名
-	- `docker run -name my-ngnix nginx`
+	`docker run -name my-ngnix nginx`
 	
 - `-p`：端口映射。容器内网络（见容器网络）和主机隔离
-	- `docker run -p 80:80 nginx`
+	`docker run -p 80:80 nginx`
 
 
 - `-v`：挂载卷。进行容器内目录和主机目录相绑定，删除容器时，容器对文件的修改保留在主机内
-	- `docker run -v /web/html:/usr/share/nginx/html nginx`：
-		- 初始化时，主机目录下的文件会覆盖容器目录下的文
+	`docker run -v /web/html:/usr/share/nginx/html nginx`：
+		初始化时，主机目录下的文件会覆盖容器目录下的文
 
-	- `docker run -v nginx_html:/usr/share/nginx/html nginx`：
-		- 初始化时，容器目录下文件会覆盖**命名卷（如下）**中文件
-		- `docker volume create nginx_html`：创建命名卷
-		- `docker volume inspect nginx_html`：查看命名卷在主机中的位置
+	`docker run -v nginx_html:/usr/share/nginx/html nginx`：
+		初始化时，容器目录下文件会覆盖**命名卷（如下）**中文件
+		`docker volume create nginx_html`：创建命名卷
+		`docker volume inspect nginx_html`：查看命名卷在主机中的位置
 
 
 - `-e`：传递环境变量
-
-	- `docker run -e MONGO_INITDB_ROOT_USERNAME=admin mongo`：
+	`docker run -e MONGO_INITDB_ROOT_USERNAME=admin mongo`：
 
 - `-it`：进入容器与之交互，如 ls、cd 等指令
 
 - `--rm`：容器停止时删除容器
 
-  - `docker run -it --rm alpine`
+  `docker run -it --rm alpine`
 
 - `--restart`：
 
-  - `docker run --restart always nginx`：
-    - 容器因意外或手动停止时总是重启
+  `docker run --restart always nginx`：
+  	容器因意外或手动停止时总是重启
 
-  - `docker run --restart unless-stopped nginx`：
-    - 容器因意外停止时总是重启，手动停止不重启
-
-
+  `docker run --restart unless-stopped nginx`：
+  	容器因意外停止时总是重启，手动停止不重启
   
-
 
 2、`docker ps`：列出**正在运行**的容器
 
@@ -102,7 +96,6 @@ summary: "Learning of Docker"
 
 ​      `docker rm -f ID/容器名`：强制删除
 
-+++
 
 ### 四、调试容器
 
@@ -120,7 +113,6 @@ summary: "Learning of Docker"
 
 7、`exit`：退出
 
-+++
 
 ### 五、Dockerfile
 
@@ -155,7 +147,6 @@ CMD ["python3","main.py"]
 
 ​	`docker push 用户名/镜像名`
 
-+++
 
 ### 六、容器网络（待补充）
 
@@ -171,7 +162,6 @@ CMD ["python3","main.py"]
 - `docker run --network my-net ...`
 - 优势： 同一个网桥内的容器可以通过 **容器名** 互相访问（内置 DNS 解析），比 IP 更稳定。
 
-+++
 
 ### 七、docker compose
 
@@ -186,3 +176,4 @@ CMD ["python3","main.py"]
 3、`docker compose stop`：停止
 
 4、`docker compose start`：运行
+

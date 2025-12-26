@@ -28,7 +28,3 @@ theme = "congo"
 
 [outputs]
   home = ["HTML", "RSS", "JSON"]
-
-[params]
-  goatcounter = "zde2cf"  
-  article.showVisitCount = true  # 默认显示浏览量，可在文章 front matter 中覆盖

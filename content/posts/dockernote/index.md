@@ -69,7 +69,7 @@ summary: "Learning of Docker"
    - `docker rm ID/容器名称`。
    - 强制：`docker rm -f ID/容器名称`。
 
-## 调试和检查容器
+## 调试容器
 
 1. 停止容器：`docker stop ID/容器名称`。
 
@@ -85,7 +85,7 @@ summary: "Learning of Docker"
 
 7. 退出：输入 `exit`。
 
-## 使用 Dockerfile 构建
+## Dockerfile
 
 Dockerfile 允许自动化镜像创建。
 
@@ -130,7 +130,7 @@ Docker 提供几种网络模式。
    - 运行：`docker run --network my-net ...`。
    - 优势：同一网络中的容器可以通过名称互相访问（内置 DNS）。
 
-## 使用 Docker Compose
+## Docker Compose
 
 对于多容器应用，Docker Compose 简化了编排。在 docker-compose.yaml 文件中定义服务。
 
@@ -153,3 +153,4 @@ services:
 - 停止并删除：`docker compose down`。
 - 停止：`docker compose stop`。
 - 启动：`docker compose start`。
+

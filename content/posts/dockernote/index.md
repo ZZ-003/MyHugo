@@ -4,176 +4,152 @@ date: 2025-12-20 12:00:00
 draft: false
 author: "ZdeEcf"
 categories: ["笔记"]
-tags: ["笔记" , "Docker"]
-featureImage: "./feature.jpg" 
+tags: ["笔记", "Docker"]
+featureImage: "./feature.jpg"
 summary: "Learning of Docker"
 ---
 
-## Docker Learn
-
+# Docker Learn
 对 https://www.bilibili.com/video/BV1THKyzBER6/?spm_id_from=333.337.search-card.all.click 的学习笔记
 
-### 一、基础概念
+## 基础概念
 
-1、image 镜像：类比安装包
+1. 镜像（Image）：类似于安装包。它是一个轻量级、独立的可执行软件包，包含运行软件所需的一切。
 
-2、container 容器：类比app
+2. 容器（Container）：类似于从镜像创建的运行应用实例。容器是隔离的，但共享主机的内核。
 
-3、repository 仓库：镜像集
+3. 仓库（Repository）：镜像的集合，通常托管在 Docker Hub 等平台上。
 
-4、Dockerfile：镜像的图纸，类比安装包的设计图纸
+4. Dockerfile：构建镜像的蓝图，类似于安装包的设计图纸。
 
-5、docker：
+5. Docker 本身：只要容器处于运行状态，并且镜像包含 Shell 解释器（如 /bin/sh 或 /bin/bash），就可以使用 docker exec 进入其中，像操作系统一样与之交互。
 
-​	只要容器处于 **运行状态**，且镜像内包含 **Shell 解析器**（如 `/bin/sh` 或 `/bin/bash`），就可以使用 `docker exec` 进入其中，像个操作系统一样。
+## Image 镜像
 
+镜像是 Docker 的基础。以下是如何操作它们。
 
-### 二、Image 镜像
+1. 下载镜像：从仓库拉取。
+   - 命令：`docker pull docker.io/library/nginx:latest`
+   - 解释：（仓库 URL / 作者 / 镜像名称 : 版本）。官方镜像可以省略仓库和作者；latest 可以省略如果它是默认的。
 
-1、`docker pull docker.io/library/nginx:latest` ：下载镜像
+2. 构建镜像：从当前目录的 Dockerfile 创建。
+   - 命令：`docker build -t 镜像名称 .`
 
-​			      （仓库地址 / 作者名 / 镜像名 : 版本）
+3. 列出镜像：查看本地可用镜像。
+   - 命令：`docker images`
 
-​			      （仓库地址，作者名，是官方时克省略；版本为 latest 时可省略）
+4. 删除镜像：清理未使用的镜像。
+   - 命令：`docker rmi ID/镜像名称`
 
-2、`docker build -t 镜像名 .` ：从当前目录下的Dockerfile文件构建镜像
+## Container 容器
 
-3、`docker images` ：列出镜像
+1. 运行容器：从镜像启动容器。
+   - 基本命令：`docker run nginx`（随机分配容器名称）。
+   - 选项（可以任意顺序组合）：
+     - `-d`：后台运行（分离模式）。示例：`docker run -d nginx`。
+     - `--name`：分配自定义名称。示例：`docker run --name my-nginx nginx`。
+     - `-p`：端口映射（主机:容器）。示例：`docker run -p 80:80 nginx`（将主机端口 80 映射到容器的 80）。
+     - `-v`：卷挂载，用于数据持久化。
+       - 绑定挂载：`docker run -v /web/html:/usr/share/nginx/html nginx`（初始化时主机目录覆盖容器目录）。
+       - 命名卷：`docker run -v nginx_html:/usr/share/nginx/html nginx`（初始化时容器目录覆盖卷）。
+         - 创建卷：`docker volume create nginx_html`。
+         - 检查：`docker volume inspect nginx_html`。
+     - `-e`：设置环境变量。示例：`docker run -e MONGO_INITDB_ROOT_USERNAME=admin mongo`。
+     - `-it`：交互模式带终端。示例：`docker run -it alpine`。
+     - `--rm`：停止时自动删除。示例：`docker run -it --rm alpine`。
+     - `--restart`：自动重启策略。
+       - `always`：任何停止时重启。示例：`docker run --restart always nginx`。
+       - `unless-stopped`：除手动停止外重启。
 
-4、`docker rmi ID/镜像名`：删除镜像
+2. 列出容器：
+   - 运行中：`docker ps`。
+   - 所有：`docker ps -a`。
 
+3. 删除容器：
+   - `docker rm ID/容器名称`。
+   - 强制：`docker rm -f ID/容器名称`。
 
-### 三、Container 容器
+## 调试和检查容器
 
-1、`docker run nginx(镜像名)`：使用镜像创建并运行容器，但容器名随机
+1. 停止容器：`docker stop ID/容器名称`。
 
-​	**以下的 可选参数 无先后顺序之分**
+2. 启动容器：`docker start ID/容器名称`（保留先前配置）。
 
-- `-d` ：后台运行	
-	`docker run -d nginx`
+3. 检查细节：`docker inspect ID/容器名称`。
 
+4. 创建但不运行：`docker create 镜像名称`。
 
-- `--name`：命名
-	`docker run -name my-ngnix nginx`
-	
-- `-p`：端口映射。容器内网络（见容器网络）和主机隔离
-	`docker run -p 80:80 nginx`
+5. 查看日志：`docker logs ID/容器名称 -f`（实时跟随模式）。
 
+6. 进入容器：`docker exec -it ID/容器名称 /bin/sh`（或 /bin/bash）。
 
-- `-v`：挂载卷。进行容器内目录和主机目录相绑定，删除容器时，容器对文件的修改保留在主机内
-	`docker run -v /web/html:/usr/share/nginx/html nginx`：
-		初始化时，主机目录下的文件会覆盖容器目录下的文
+7. 退出：输入 `exit`。
 
-	`docker run -v nginx_html:/usr/share/nginx/html nginx`：
-		初始化时，容器目录下文件会覆盖**命名卷（如下）**中文件
-		`docker volume create nginx_html`：创建命名卷
-		`docker volume inspect nginx_html`：查看命名卷在主机中的位置
+## 使用 Dockerfile 构建
 
+Dockerfile 允许自动化镜像创建。
 
-- `-e`：传递环境变量
-	`docker run -e MONGO_INITDB_ROOT_USERNAME=admin mongo`：
-
-- `-it`：进入容器与之交互，如 ls、cd 等指令
-
-- `--rm`：容器停止时删除容器
-
-  `docker run -it --rm alpine`
-
-- `--restart`：
-
-  `docker run --restart always nginx`：
-  	容器因意外或手动停止时总是重启
-
-  `docker run --restart unless-stopped nginx`：
-  	容器因意外停止时总是重启，手动停止不重启
-  
-
-2、`docker ps`：列出**正在运行**的容器
-
-​      `docker ps -a`：列出**所有**的容器
-
-3、`docker rm ID/容器名`：删除容器
-
-​      `docker rm -f ID/容器名`：强制删除
-
-
-### 四、调试容器
-
-1、`docker stop ID/容器名`：停止容器
-
-2、`docker start ID/容器名`：启动容器。无需重新配置可选项
-
-3、 `docker inspect ID/容器名`：查看容器信息
-
-4、`docker create 镜像名`：使用镜像创建容器，但不运行
-
-5、`docker logs ID/容器名 -f`：滚动查看容器日志
-
-6、`docker exec -it ID/容器名 /bin/sh`：进入容器与之交互
-
-7、`exit`：退出
-
-
-### 五、Dockerfile
-
-```BASH
+```dockerfile
 FROM python:3.13-slim
-# 选择基础镜像
+# 基础镜像
 
 WORKDIR /app
 # 设置工作目录
 
 COPY . .
-# 拷贝主机当前目录文件到容器的工作目录下
+# 复制当前目录文件到容器工作目录
 
-RUN pip install -r requirement.txt
-# 用 “RUN + 指令” 来搭建依赖
+RUN pip install -r requirements.txt
+# 安装依赖
 
 EXPOSE 8000
-# 端口暴露，仅起到声明和文档作用。
-# 并不会自动完成端口映射，仍然需要在 docker run 时使用 -p
+# 声明端口（信息性；运行时仍需 -p）
 
-CMD ["python3","main.py"]
-# 用该 Dockerfile 创建的镜像，创建容器后，容器启动时的默认命令
+CMD ["python3", "main.py"]
+# 容器启动时的默认命令
 ```
 
-1、`docker build -t 镜像名 .` ：创建镜像（在当前目录下）
+- 构建：`docker build -t 镜像名称 .`。
+- 推送到仓库：
+  - 登录：`docker login`。
+  - 带标签构建：`docker build -t 用户名/镜像名称 .`。
+  - 推送：`docker push 用户名/镜像名称`。
 
-2、推送镜像：
+## 容器网络（待补充）
 
-​	`docker login`
+Docker 提供几种网络模式。
 
-​	`docker build -t 用户名/镜像名 .`
+1. 桥接（Bridge，默认）：每个容器分配虚拟 IP；通过主机的 docker0 桥通信。最常用。
 
-​	`docker push 用户名/镜像名`
+2. 主机（Host）：共享主机的网络栈（IP/端口）。性能最高，无隔离。
 
+3. 无（None）：仅隔离环回；无外部网络。安全性最高。
 
-### 六、容器网络（待补充）
+4. 自定义桥接：
+   - 创建：`docker network create my-net`。
+   - 运行：`docker run --network my-net ...`。
+   - 优势：同一网络中的容器可以通过名称互相访问（内置 DNS）。
 
-1. Bridge (桥接，默认)：每个容器分配一个虚拟 IP，通过宿主机的 `docker0` 网桥通信。最常用。 
+## 使用 Docker Compose
 
-2. Host (主机)：容器直接使用宿主机的网络栈（IP 和端口）。性能最高，但没有端口隔离。 
-
-3. None (禁用)：容器只有 loopback (127.0.0.1)，不与外部联网，安全性极高。 
-
-4. Custom Bridge (自定义网桥)：
-
-- `docker network create my-net`
-- `docker run --network my-net ...`
-- 优势： 同一个网桥内的容器可以通过 **容器名** 互相访问（内置 DNS 解析），比 IP 更稳定。
-
-
-### 七、docker compose
-
-**docker-compose.yaml 文件**
+对于多容器应用，Docker Compose 简化了编排。在 docker-compose.yaml 文件中定义服务。
 
 ![1](1.png)
+```yaml
+# 示例 docker-compose.yaml
+version: '3'
+services:
+  web:
+    image: nginx
+    ports:
+      - "80:80"
+  db:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+```
 
-1、`docker compose up -d`：创建容器并运行（自动内置在同一个子网）
-
-2、`docker compose down`：停止并删除
-
-3、`docker compose stop`：停止
-
-4、`docker compose start`：运行
-
+- 启动：`docker compose up -d`（创建并在分离模式运行；自动联网）。
+- 停止并删除：`docker compose down`。
+- 停止：`docker compose stop`。
+- 启动：`docker compose start`。

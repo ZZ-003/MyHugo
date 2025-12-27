@@ -1,12 +1,12 @@
 ---
-title: "对文件处理的记录"
+title: "Make on file"
 date: 2025-12-20 12:00:00
 draft: false
 author: "ZdeEcf"
 categories: ["笔记"]
 tags: ["笔记" , "文件处理"]
 featureImage: "./feature.jpg" 
-summary: "文件处理"
+summary: "file operation"
 ---
 
 ## 文件处理
@@ -39,4 +39,5 @@ if __name__ == "__main__":
     target_dir = "./test_2000"
     check_docker(target_dir)
 ```
+
 

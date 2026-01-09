@@ -117,9 +117,11 @@ CMD ["python3", "main.py"]
 
 ## 容器网络（待补充）
 
+https://www.bilibili.com/video/BV1Aj411r71b?vd_source=db6d41d1f902f7246b73881e8170cb8f&spm_id_from=333.788.videopod.sections
+
 Docker 提供几种网络模式。
 
-1. 桥接（Bridge，默认）：每个容器分配虚拟 IP；通过主机的 docker0 桥通信。最常用。
+1. 桥接（Bridge，默认）：每个容器分配虚拟 IP；通过主机的 docker0 桥通信。可以通过设置实现 DNS 解析，例如直接 ping 容器名。
 
 2. 主机（Host）：共享主机的网络栈（IP/端口）。性能最高，无隔离。
 
@@ -153,4 +155,5 @@ services:
 - 停止并删除：`docker compose down`。
 - 停止：`docker compose stop`。
 - 启动：`docker compose start`。
+
 

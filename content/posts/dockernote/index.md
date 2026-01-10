@@ -156,4 +156,8 @@ services:
 - 停止：`docker compose stop`。
 - 启动：`docker compose start`。
 
+## 设置 Docker 代理
+
+https://my.feishu.cn/docx/VHUyduwlwoxepux5bp6cpCAbnRg
+
 

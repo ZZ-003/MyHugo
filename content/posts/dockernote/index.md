@@ -160,4 +160,11 @@ services:
 
 https://my.feishu.cn/docx/VHUyduwlwoxepux5bp6cpCAbnRg
 
+## DOcker push
+上传自己的镜像
+   docker login
+   docker push [OPTIONS] NAME[:TAG]
+      NAME: 镜像名称，通常包含注册表地址（如 docker.io/myrepo/myimage，zdeecf/*** ）
+      TAG（可选）: 镜像标签，默认为 latest。
+详见：https://www.runoob.com/docker/docker-push-command.html
 

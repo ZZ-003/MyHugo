@@ -1,6 +1,6 @@
 ---
 date : '2024-12-20T17:23:40+08:00'
-draft : true
+draft : false
 title : 'Linux Note'
 featureImage : "feature.jpg" 
 categories : ["Linux"]

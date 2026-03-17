@@ -1,7 +1,7 @@
 ---
 date : '2024-12-20T17:23:40+08:00'
 draft : true
-title : 'My4656'
+title : 'Linux Note'
 featureImage : "feature.jpg" 
 categories : ["Linux"]
 tags : ["笔记", "Linux"]

@@ -160,7 +160,7 @@ services:
 
 https://my.feishu.cn/docx/VHUyduwlwoxepux5bp6cpCAbnRg
 
-## DOcker push
+## Docker push
 
 上传自己的镜像
 

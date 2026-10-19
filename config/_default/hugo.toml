@@ -5,11 +5,14 @@
 relativeURLs = false
 # 2. 保持 false
 uglyURLs = false
-# 3. BaseURL 留空或者是 "/" 都可以，建议如下设置让 Vercel 自动适配
-baseURL = "/"
+# 3. 站点正式域名（绝对地址），Vercel 也可通过 HUGO_BASEURL 覆盖
+baseURL = "https://zde2cf.vercel.app/"
 
 languageCode = "zh-cn"
-defaultContentLanguage = "zh-cn"
+# 按中日韩字符计数（否则中文正文会被当成 1 个单词）
+hasCJKLanguage = true
+# 语言 key 必须与主题 i18n 文件名一致（zh-Hans.yaml）
+defaultContentLanguage = "zh-Hans"
 title = "欢迎来到my博客"
 
 # 这一行是灵魂，告诉Hugo去 themes 文件夹找 congo

@@ -2,7 +2,7 @@
 date : '2024-12-20T17:23:40+08:00'
 draft : false
 title : 'Linux Note'
-featureImage : "feature.jpg" 
+feature: "feature.jpg" 
 categories : ["Linux"]
 tags : ["笔记", "Linux"]
 summary : "一些对Linux指令的使用记录"

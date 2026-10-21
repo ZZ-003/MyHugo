@@ -5,15 +5,15 @@ draft: false
 author: "ZdeEcf"
 categories: ["笔记"]
 tags: ["笔记" , "软工"]
-featureImage: "./feature.jpg" 
+feature: "feature.jpg" 
 summary: "Note of software engineering"
 ---
 
 # 期末软工复习手稿
 
-> [!NOTE]
->
-> ==大题出自**平时布置的作业**，概念题无解，看命==
+{{< alert "circle-info" >}}
+==大题出自**平时布置的作业**，概念题无解，看命==
+{{< /alert >}}
 
 
 原本是放了速成笔记的，tmd，软工是我考的**最答辩的科目**。  

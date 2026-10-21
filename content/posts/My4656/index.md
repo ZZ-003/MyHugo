@@ -3,7 +3,7 @@ date = '2025-12-20T17:23:40+08:00'
 draft = true
 title = 'My4656'
 
-featureImage = "feature.jpg" 
+feature = "feature.jpg" 
 
 categories = ["测试"]
 tags = ["Hugo", "教程", "测试"]

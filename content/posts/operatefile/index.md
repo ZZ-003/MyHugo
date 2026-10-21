@@ -5,7 +5,7 @@ draft: false
 author: "ZdeEcf"
 categories: ["笔记"]
 tags: ["笔记" , "文件处理"]
-featureImage: "./feature.jpg" 
+feature: "feature.jpg" 
 summary: "File Operation"
 ---
 

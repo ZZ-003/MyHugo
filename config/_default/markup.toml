@@ -5,6 +5,10 @@
 [goldmark.renderer]
   unsafe = true
 
+# 启用 ==高亮== 语法
+[goldmark.extensions.extras.mark]
+  enable = true
+
 [highlight]
   noClasses = false
 

@@ -5,7 +5,7 @@ draft: false
 author: "ZdeEcf"
 categories: ["笔记"]
 tags: ["笔记", "Docker"]
-featureImage: "./feature.jpg"
+feature: "feature.jpg"
 summary: "Learning of Docker"
 ---
 

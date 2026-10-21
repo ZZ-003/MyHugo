@@ -10,8 +10,10 @@ body {
     background-repeat: no-repeat;
 }
 
-/* 2. 修复头部排版：只加白框，不乱动位置 */
-header {
+/* 2. 修复头部排版：只加白框，不乱动位置
+   注意：只作用于站点顶栏（body 直接子级的 header），
+   避免影响搜索弹窗内部的 header 工具栏 */
+body > header {
     /* 核心：加半透明白底 */
     background-color: rgba(255, 255, 255, 0.95);
     /* 核心：加圆角 */
@@ -32,4 +34,25 @@ main {
     padding: 2rem;
     margin-top: 2rem;
     margin-bottom: 2rem;
+}
+
+/* 4. 深色模式适配：容器同步变暗，避免白底白字
+   注意：不要在 html 上设置 background-color。
+   html 一旦有不透明背景，body 的背景图就不再传递到画布，
+   内容超出一屏后下方会露出 html 的纯白/纯黑底色。 */
+html.dark body {
+    /* 背景图叠加深色遮罩，保留纹理但不刺眼 */
+    background-image:
+        linear-gradient(rgba(9, 9, 11, 0.78), rgba(9, 9, 11, 0.78)),
+        url('/bg.jpg');
+}
+
+html.dark body > header,
+html.dark main {
+    background-color: rgba(24, 24, 27, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+html.dark body > header {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
 }

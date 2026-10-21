@@ -5,7 +5,7 @@ draft: false
 author: "ZdeEcf"
 categories: ["笔记"]
 tags: ["笔记", "虚拟机"]
-featureImage: "./feature.jpg"
+feature: "feature.jpg"
 summary: "Learning of VMware"
 ---
 
@@ -15,13 +15,13 @@ https://www.bilibili.com/video/BV11M4y1J7zP?vd_source=db6d41d1f902f7246b73881e81
 
 ### 查看虚拟机的ip
 
-1、输入  `if a`  ：
+1、输入 `if a` ：
 
-​	查看 **ens*** 下的 **inet** 后面的字段，一般在 ens33 的第二行
+查看 **ens*** 下的 **inet** 后面的字段，一般在 ens33 的第二行
 
-> [!NOTE]
->
-> 注意是 **inet** 不是 **inet6**
+{{< alert "circle-info" >}}
+注意是 **inet** 不是 **inet6**
+{{< /alert >}}
 
 2、`ping baidu.com`
 

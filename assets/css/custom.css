@@ -195,6 +195,14 @@ html.dark #oml2d-tips {
     box-shadow: 0 0 6px rgba(93, 74, 43, 0.25) !important;
 }
 
+/* 7. Twikoo 评论区深色适配：组件 CSS 大量使用 currentColor，随站点文字色
+   自动适配深浅色，无需整体覆盖；唯一例外是 .tk-tag（博主/置顶等徽章）
+   硬编码了浅蓝灰底，深色下换半透明白底压暗（浅色沿用组件默认）。
+   评论框由 layouts/_partials/comments.html 渲染，配置在 params.toml [twikoo]。 */
+html.dark .twikoo .tk-tag {
+    background-color: rgba(255, 255, 255, 0.10);
+}
+
 /* 移动端隐藏看板娘：库按 UA 检测，这里按视口宽度兜底，双保险 */
 @media (max-width: 768px) {
     #oml2d-stage,

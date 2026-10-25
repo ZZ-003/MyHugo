@@ -1,0 +1,36 @@
+{{/* =========================================================================
+  Twikoo 评论区（客户端 v2.0.17 自托管于 static/twikoo/twikoo.all.min.js，
+  与 oh-my-live2d 一致的本地化策略，不依赖外部 CDN）
+
+  ▸ 后端地址：config/_default/params.toml 的 [twikoo] envId
+    （Vercel 部署的 Twikoo 云函数域名，形如 https://xxx.vercel.app，
+     注意与客户端保持同一大版本；为空时本 partial 渲染"部署中"占位）
+  ▸ 评论归属：按页面 URL 路径自动区分，Hugo 目录式 URL 每篇天然唯一，
+    无需显式传 path
+  ▸ 深色模式：组件样式大量使用 currentColor，随站点文字色自动适配，
+    仅 .tk-tag（博主标识等标签）硬编码了浅底，在 assets/css/custom.css
+    的「Twikoo 深色模式」一节覆盖
+  ▸ 头像规则：QQ 邮箱显示 QQ 头像，其他邮箱走 Gravatar；访客免注册，
+    只填昵称 + 邮箱即可评论
+========================================================================= */}}
+{{ with site.Params.twikoo.envId }}
+  <div id="tcomment"></div>
+  <script src="{{ "twikoo/twikoo.all.min.js" | relURL }}"></script>
+  <script>
+    function initTwikoo() {
+      twikoo.init({
+        envId: {{ . | jsonify | safeJS }},
+        el: '#tcomment'
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initTwikoo);
+    } else {
+      initTwikoo();
+    }
+  </script>
+{{ else }}
+  <p class="py-4 text-center text-sm text-neutral-400 dark:text-neutral-500">
+    评论区部署中，稍后再来看看～
+  </p>
+{{ end }}

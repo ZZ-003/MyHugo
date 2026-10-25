@@ -52,8 +52,14 @@ fingerprintAlgorithm = "sha256"
   showTableOfContents = true
   showTaxonomies = true
   showWordCount = true
-  showComments = false
+  showComments = true
   # sharingLinks = ["facebook", "x-twitter", "mastodon", "pinterest", "reddit", "linkedin", "email", "threads", "telegram", "line", "weibo", "xing", "bluesky"]
+
+# Twikoo 评论区（评论框由 layouts/_partials/comments.html 渲染）
+# envId = 你部署的 Twikoo 云函数地址（阶段 B 完成后填入，如 "https://xxx.vercel.app"）
+# 为空时文章末尾显示"部署中"占位，不会报错
+[twikoo]
+  envId = "https://twikoocomment-ten.vercel.app"
 
 [list]
   showBreadcrumbs = false

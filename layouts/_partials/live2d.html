@@ -1,0 +1,216 @@
+{{/* =========================================================================
+  Live2D 看板娘（oh-my-live2d v0.19.3，全部资源自托管于 static/live2d/）
+
+  ▸ 加模型 / 改台词 / 行为开关：只编辑 data/live2d.toml，不用动本文件
+      （台词含 [tips.welcome] 分时段欢迎 / [tips.idle] 闲聊 /
+        [tips.copy] 复制提醒 / [tips.tap] 点击反应台词）
+  ▸ 点击反馈：有 hit_areas 的模型由库播对应动作；无 hit_areas 的模型
+    （如 cat-black）由本文件的 tapFeedback 兜底随机播动作组，
+    两种情况都会弹 [tips.tap] 台词气泡（250ms 内库未播动作才兜底）
+  ▸ 加菜单项：在下方 MENU_EXTRAS 数组追加（追加式；默认菜单为
+      休息 / 切换衣服 / 切换模型，"关于"已在 items 过滤中移除）
+  ▸ 图标：icon 字段填 SVG symbol 的 id；自定义图标先在 CUSTOM_ICONS 里
+      注入 <symbol id="pet-icon-xxx">（前缀 pet-icon- 避免与库冲突）
+  ▸ 功能联动：挂 window.petAPI.on(事件, 回调)
+      事件：'model-changed'（模型切换）、'dark-changed'（深浅色变化）
+      示例：夜间自动换睡衣模型 —— petAPI.on('dark-changed', e => {...})
+  ▸ window.petAPI 方法（控制台可直接调用）：
+      nextModel() / nextClothes() / toggleDark() / scrollTop() /
+      on() / off() / .oml2d（库实例）/ .config（本页运行时配置镜像）
+========================================================================= */}}
+{{ $cfg := site.Data.live2d }}
+<script>
+  (function () {
+    'use strict';
+
+    /* ======== 1. 配置镜像（来源：data/live2d.toml） ======== */
+    var BEHAVIOR = {
+      mobileDisplay: {{ $cfg.behavior.mobileDisplay | default false }},
+      initialStatus: {{ $cfg.behavior.initialStatus | default "active" | jsonify | safeJS }},
+      transitionTime: {{ $cfg.behavior.transitionTime | default 1000 }},
+      statusBar: {{ $cfg.behavior.statusBar | default true }},
+      preloadAll: {{ $cfg.behavior.preloadAll | default true }}
+    };
+
+    var MODELS = [
+      {{- range $cfg.models }}
+      {
+        path: {{ printf "live2d/models/%s/%s" .id .json | relURL | jsonify | safeJS }},
+        position: [{{ index .position 0 | default 0 }}, {{ index .position 1 | default 0 }}],
+        scale: {{ .scale | default 0.1 }},
+        motionPreloadStrategy: BEHAVIOR.preloadAll ? 'ALL' : 'IDLE'
+      },
+      {{- end }}
+    ];
+
+    var TIPS = {
+      welcomeTips: {
+        message: {
+          weeHours: {{ $cfg.tips.welcome.weeHours | default "凌晨了，让文字陪你一会儿吧。" | jsonify | safeJS }},
+          daybreak: {{ $cfg.tips.welcome.daybreak | default "天快亮了，一日之计在于晨。" | jsonify | safeJS }},
+          morning: {{ $cfg.tips.welcome.morning | default "上午好，今天也要慢慢走。" | jsonify | safeJS }},
+          noon: {{ $cfg.tips.welcome.noon | default "中午了，记得吃饭，别对付。" | jsonify | safeJS }},
+          afternoon: {{ $cfg.tips.welcome.afternoon | default "午后容易犯困，来杯茶吧。" | jsonify | safeJS }},
+          dusk: {{ $cfg.tips.welcome.dusk | default "傍晚了，黄昏正缠绕玫瑰与蛇。" | jsonify | safeJS }},
+          night: {{ $cfg.tips.welcome.night | default "晚上好，今天过得怎么样？" | jsonify | safeJS }},
+          lateNight: {{ $cfg.tips.welcome.lateNight | default "这么晚了，早点休息吧，晚安。" | jsonify | safeJS }}
+        }
+      },
+      idleTips: {
+        message: {{ $cfg.tips.idle.messages | jsonify | safeJS }},
+        interval: {{ $cfg.tips.idle.interval | default 15000 }},
+        duration: {{ $cfg.tips.idle.duration | default 5000 }}
+      },
+      copyTips: {
+        message: {{ $cfg.tips.copy.messages | jsonify | safeJS }}
+      },
+      tapQuips: {{ $cfg.tips.tap.messages | jsonify | safeJS }}
+    };
+
+    /* ======== 2. 深浅色切换（复用 Congo 自带开关，localStorage 自动持久化） ======== */
+    function toggleDark() {
+      var btn = document.getElementById('appearance-switcher-0');
+      if (btn) {
+        btn.click();
+      } else {
+        document.documentElement.classList.toggle('dark');
+      }
+    }
+
+    /* ======== 3. 事件总线 + petAPI（后续功能的扩展接口） ======== */
+    var bus = new EventTarget();
+    function emit(name, detail) {
+      bus.dispatchEvent(new CustomEvent(name, { detail: detail || {} }));
+    }
+
+    window.petAPI = {
+      oml2d: null,
+      config: { behavior: BEHAVIOR, models: MODELS },
+      nextModel: function () {
+        if (this.oml2d) { this.oml2d.loadNextModel(); emit('model-changed'); }
+      },
+      nextClothes: function () {
+        if (this.oml2d) { this.oml2d.loadNextModelClothes(); emit('model-changed'); }
+      },
+      toggleDark: toggleDark,
+      scrollTop: function () { window.scrollTo({ top: 0, behavior: 'smooth' }); },
+      on: bus.addEventListener.bind(bus),
+      off: bus.removeEventListener.bind(bus)
+    };
+
+    /* ======== 4. 自定义菜单图标（注入 SVG symbol，供 <use> 引用） ======== */
+    var CUSTOM_ICONS =
+      '<svg style="display:none" xmlns="http://www.w3.org/2000/svg">' +
+      '<symbol id="pet-icon-top" viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.59 5.58L20 12l-8-8-8 8z"/></symbol>' +
+      '<symbol id="pet-icon-dark" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3z"/></symbol>' +
+      '</svg>';
+
+    /* ======== 5. 菜单扩展区：加菜单项在这里追加（icon 用 symbol id） ======== */
+    var MENU_EXTRAS = [
+      {
+        id: 'pet-back-to-top',
+        icon: 'pet-icon-top',
+        title: '回到顶部',
+        onClick: function () { petAPI.scrollTop(); }
+      },
+      {
+        id: 'pet-toggle-dark',
+        icon: 'pet-icon-dark',
+        title: '切换深浅色',
+        onClick: function () { petAPI.toggleDark(); }
+      }
+    ];
+
+    /* ======== 6. 初始化（window load 后懒加载库，不抢首屏带宽） ======== */
+    // 层级约定：全部压到 zIndex 40 —— 低于 Congo 搜索遮罩(z-50)会被正常盖住，
+    // 高于正文；返回顶部按钮由 custom.css 提升到 z-45 保证可点。
+    var LAYER = { zIndex: 40 };
+
+    function init() {
+      document.body.insertAdjacentHTML('afterbegin', CUSTOM_ICONS);
+
+      var oml2d = OML2D.loadOml2d({
+        dockedPosition: 'right',          // 右下角停靠（库默认 left，必须显式指定）
+        initialStatus: BEHAVIOR.initialStatus,
+        mobileDisplay: BEHAVIOR.mobileDisplay,
+        transitionTime: BEHAVIOR.transitionTime,
+        primaryColor: '#3b82f6',          // 与 Congo 主题蓝色系一致
+        sayHello: false,
+        stageStyle: {
+          width: 300,
+          height: 400,
+          right: '60px',                  // 给返回顶部按钮（视口右侧 0-48px）让位
+          zIndex: LAYER.zIndex
+        },
+        menus: {
+          // defaults = [Rest 休息, SwitchModelClothes 切换衣服, SwitchModel 切换模型, About 关于]
+          // 过滤掉 About（点击会打开 oh-my-live2d 官网，对本站无意义）
+          items: function (defaults) {
+            return defaults.filter(function (item) { return item.id !== 'About'; }).concat(MENU_EXTRAS);
+          },
+          style: LAYER
+        },
+        statusBar: {
+          disable: !BEHAVIOR.statusBar,
+          style: LAYER,
+          mobileStyle: LAYER
+        },
+        models: MODELS,
+        tips: Object.assign({ style: LAYER, mobileStyle: LAYER }, TIPS)
+      });
+
+      window.petAPI.oml2d = oml2d;
+      emit('model-changed', { index: 0 });
+
+      /* ======== 7. 点击反馈：台词气泡 + 无 hit 区模型的动作兜底 ========
+         有 hit_areas 的模型（如 shizuku）：库在点击后播对应动作组；
+         没有 hit_areas 的模型（如 cat-black/hijiki）：点击无动作 ——
+         250ms 内库没有触发任何 playMotion 时，随机播一个动作组兜底。
+         每次点击都弹一句台词（showMessage 自带抖动动画，反馈明显）。 */
+      (function tapFeedback() {
+        var canvas = oml2d.stage && oml2d.stage.canvasElement;
+        if (!canvas) return;
+        var motionPlayed = false;
+        var origPlay = oml2d.models.playMotion.bind(oml2d.models);
+        oml2d.models.playMotion = function (group, index) {
+          motionPlayed = true;
+          return origPlay(group, index);
+        };
+        function playRandomGroup() {
+          var model = oml2d.models.model;
+          var groups = model && model.internalModel
+            ? Object.keys(model.internalModel.motionManager.motionGroups || {})
+            : [];
+          var pool = groups.filter(function (g) { return g !== 'idle'; });
+          if (!pool.length) pool = groups;
+          if (pool.length) oml2d.models.playMotion(pool[Math.floor(Math.random() * pool.length)]);
+        }
+        canvas.addEventListener('pointerdown', function () {
+          var quips = TIPS.tapQuips || [];
+          if (quips.length && oml2d.tips && oml2d.tips.showMessage) {
+            try { oml2d.tips.showMessage(quips[Math.floor(Math.random() * quips.length)], 2500, 3); } catch (e) {}
+          }
+          motionPlayed = false;
+          setTimeout(function () { if (!motionPlayed) playRandomGroup(); }, 250);
+        });
+      })();
+
+      // 深浅色变化事件（供 petAPI.on('dark-changed', ...) 使用）
+      new MutationObserver(function () {
+        emit('dark-changed', {
+          dark: document.documentElement.classList.contains('dark')
+        });
+      }).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+    }
+
+    window.addEventListener('load', function () {
+      var s = document.createElement('script');
+      s.src = {{ "live2d/lib/oh-my-live2d-0.19.3.min.js" | relURL | jsonify | safeJS }};
+      s.onload = init;
+      document.head.appendChild(s);
+    });
+  })();
+</script>

@@ -56,3 +56,42 @@ html.dark main {
 html.dark body > header {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
 }
+
+/* 5. Live2D 看板娘层级约定（oh-my-live2d 自托管，见 data/live2d.toml）
+   DOM 结构决定层级策略（曾因全压 z-40 导致"菜单按钮点击无效"）：
+   - #oml2d-stage 是 fixed + z-index 的 stacking context，整棵子树被钳制在其层级内
+     → 舞台设 z-40：低于搜索弹窗(z-50)，内部画布 z-9998 也逃不出 40
+   - 菜单/气泡是舞台【子元素】，z-index 只在舞台 context 内比较
+     → 必须 > 画布的 9998，设 9999；同时气泡加 pointer-events:none 让点击穿透
+   - 状态栏是 body【子元素】（舞台兄弟节点）→ z-41 高于舞台即可
+   - 返回顶部按钮 z-45，始终压在看板娘之上保证可点 */
+#to-top {
+    z-index: 45;
+}
+
+#oml2d-stage {
+    z-index: 40 !important;
+}
+
+#oml2d-menus,
+#oml2d-tips {
+    z-index: 9999 !important;
+}
+
+#oml2d-tips {
+    pointer-events: none;
+}
+
+#oml2d-statusBar {
+    z-index: 41 !important;
+}
+
+/* 移动端隐藏看板娘：库按 UA 检测，这里按视口宽度兜底，双保险 */
+@media (max-width: 768px) {
+    #oml2d-stage,
+    #oml2d-menus,
+    #oml2d-tips,
+    #oml2d-statusBar {
+        display: none !important;
+    }
+}

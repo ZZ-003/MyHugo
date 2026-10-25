@@ -22,12 +22,26 @@
         envId: {{ . | jsonify | safeJS }},
         el: '#tcomment'
       });
+      overrideMailPlaceholder();
     }
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initTwikoo);
     } else {
       initTwikoo();
     }
+
+    /* 邮箱栏占位符定制：向访客说明邮箱用途。Twikoo 本身没有逐字段占位符
+       配置（META_INPUT_REQUIRED 写死在组件里），故渲染后覆写 DOM 属性；
+       Vue 重渲染可能还原属性，用 MutationObserver 持续兜底。 */
+    var MAIL_TIP = '必填 (仅用于获取头像，无其他操作)';
+    function overrideMailPlaceholder() {
+      var input = document.querySelector('#tcomment input[name="mail"]');
+      if (input && input.placeholder !== MAIL_TIP) input.placeholder = MAIL_TIP;
+    }
+    new MutationObserver(overrideMailPlaceholder).observe(
+      document.getElementById('tcomment'),
+      { childList: true, subtree: true, attributes: true, attributeFilter: ['placeholder'] }
+    );
   </script>
 {{ else }}
   <p class="py-4 text-center text-sm text-neutral-400 dark:text-neutral-500">

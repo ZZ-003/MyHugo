@@ -60,22 +60,42 @@ html.dark body > header {
 /* 5. Live2D 看板娘层级约定（oh-my-live2d 自托管，见 data/live2d.toml）
    DOM 结构决定层级策略（曾因全压 z-40 导致"菜单按钮点击无效"）：
    - #oml2d-stage 是 fixed + z-index 的 stacking context，整棵子树被钳制在其层级内
-     → 舞台设 z-40：低于搜索弹窗(z-50)，内部画布 z-9998 也逃不出 40
+     → 舞台设 z-40：低于 Congo 搜索遮罩(z-50)，内部画布 z-9998 也逃不出 40
    - 菜单/气泡是舞台【子元素】，z-index 只在舞台 context 内比较
      → 必须 > 画布的 9998，设 9999；同时气泡加 pointer-events:none 让点击穿透
-   - 状态栏是 body【子元素】（舞台兄弟节点）→ z-41 高于舞台即可
-   - 返回顶部按钮 z-45，始终压在看板娘之上保证可点 */
-#to-top {
-    z-index: 45;
-}
-
+   - 状态栏是 body【子元素】（舞台兄弟节点）→ z-41 高于舞台即可 */
+/* 毛玻璃底板：黑猫与深色壁纸重叠时辨识度低，给舞台垫一块磨砂玻璃卡，
+   并与屏幕边缘留出 14px 呼吸感（覆盖库强制的 left:0/bottom:0） */
 #oml2d-stage {
     z-index: 40 !important;
+    left: 20px !important;
+    bottom: 20px !important;
+    background: rgba(255, 255, 255, 0.45) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(1.15) !important;
+    backdrop-filter: blur(18px) saturate(1.15) !important;
+    border-radius: 20px !important;
+    border: 1px solid rgba(255, 255, 255, 0.75) !important;
+    box-shadow: 0 8px 28px rgba(31, 41, 55, 0.22) !important;
+}
+
+/* 深色模式：玻璃转暖白浅调 —— 黑猫必须衬在浅玻璃上才看得清 */
+html.dark #oml2d-stage {
+    background: rgba(250, 246, 235, 0.26) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45) !important;
 }
 
 #oml2d-menus,
 #oml2d-tips {
     z-index: 9999 !important;
+}
+
+/* 功能按钮列：默认跟停靠侧（左停靠→猫右侧），改到舞台左缘、猫的左边；
+   bottom 提到 14% 让整列在玻璃板内上下留白更均衡（默认 10% 偏贴下缘） */
+#oml2d-menus {
+    left: 10px !important;
+    right: auto !important;
+    bottom: 14% !important;
 }
 
 #oml2d-tips {
@@ -84,6 +104,95 @@ html.dark body > header {
 
 #oml2d-statusBar {
     z-index: 41 !important;
+}
+
+/* 6. 看板娘气泡重设计：手写纸条 + 思念泡泡尾巴
+   库默认把 #oml2d-tips 容器本身当蓝底白字的"框"（内联样式），文字在
+   #oml2d-tips-content —— 全部用 !important 覆盖，造型集中在本节管理。
+   结构：纸条（左停靠时向右侧展开，不贴屏幕左缘）+ 左下两颗渐小圆点
+   尾巴指向猫（思念泡泡），楷体墨字呼应站点的文字气质。 */
+#oml2d-tips {
+    /* 位置：库给气泡设了 width:60% + min-height:100px + translateX(-50%)
+       （shake 无限循环常驻）—— 解除固定宽高让纸条随文字收缩，中心锚定保留；
+       top 下移贴近猫头（0.75× 舞台高 300，猫头约在 90px 处，尾巴圆点刚好衔接） */
+    bottom: auto !important;
+    top: 16px !important;
+    left: 60% !important;
+    width: auto !important;
+    min-height: 0 !important;
+    max-width: 205px !important;
+    filter: none !important;
+    /* 造型：米白纸条、手作细边、左下角收小示意尾巴方向 */
+    background: linear-gradient(165deg, #fffdf6 0%, #f8f0dd 100%) !important;
+    border: 1.5px solid #cbb384 !important;
+    border-radius: 14px 14px 14px 4px !important;
+    box-shadow:
+        0 6px 18px rgba(93, 74, 43, 0.20),
+        0 2px 4px rgba(93, 74, 43, 0.12),
+        inset 0 0 0 3px rgba(255, 255, 255, 0.55) !important;
+    padding: 2px !important;
+    /* 库给容器设了 fontSize:26px，文字大小移交给 content 管理 */
+    font-size: 0 !important;
+}
+
+/* 思念泡泡尾巴：两颗渐小的圆点，从纸条左下角垂向猫头（随 0.75× 同步缩小） */
+#oml2d-tips::before {
+    content: '' !important;
+    position: absolute !important;
+    left: 40px !important;
+    bottom: -11px !important;
+    width: 9px !important;
+    height: 9px !important;
+    border-radius: 50% !important;
+    background: #fbf5e6 !important;
+    border: 1.5px solid #cbb384 !important;
+}
+
+#oml2d-tips::after {
+    content: '' !important;
+    position: absolute !important;
+    left: 58px !important;
+    bottom: -19px !important;
+    width: 5px !important;
+    height: 5px !important;
+    border-radius: 50% !important;
+    background: #fbf5e6 !important;
+    border: 1.5px solid #cbb384 !important;
+}
+
+#oml2d-tips-content {
+    font-family: "Kaiti SC", "STKaiti", KaiTi, 楷体, "Noto Serif SC", serif !important;
+    font-size: 13px !important;
+    line-height: 1.75 !important;
+    color: #5d4a2b !important;
+    text-align: center !important;
+    padding: 7px 11px !important;
+    /* 覆盖库的 -webkit-box（3 行截断）+ break-all：改普通块级布局，
+       中文自然断行 + balance 均衡行宽；min-width 地板避免 balance 把
+       shrink-to-fit 容器压成窄高条（台词都是短句，无需截断） */
+    display: block !important;
+    min-width: 150px !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+    text-wrap: balance !important;
+}
+
+/* 深色模式：纸条保持米白（便签贴在暗背景上的效果），只调整投影更柔和 */
+html.dark #oml2d-tips {
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.45),
+        0 1px 3px rgba(0, 0, 0, 0.35),
+        inset 0 0 0 3px rgba(255, 255, 255, 0.55) !important;
+}
+
+/* 状态栏（休息时的竖条）配套纸条化：默认是主题蓝底白字竖条 */
+#oml2d-statusBar {
+    background: linear-gradient(180deg, #fffdf6, #f8f0dd) !important;
+    border-color: #d8c49a !important;
+    color: #5d4a2b !important;
+    font-family: "Kaiti SC", "STKaiti", KaiTi, 楷体, "Noto Serif SC", serif !important;
+    font-weight: normal !important;
+    box-shadow: 0 0 6px rgba(93, 74, 43, 0.25) !important;
 }
 
 /* 移动端隐藏看板娘：库按 UA 检测，这里按视口宽度兜底，双保险 */

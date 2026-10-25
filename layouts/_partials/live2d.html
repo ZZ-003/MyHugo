@@ -1,9 +1,12 @@
 {{/* =========================================================================
   Live2D 看板娘（oh-my-live2d v0.19.3，全部资源自托管于 static/live2d/）
 
-  ▸ 加模型 / 改台词 / 行为开关：只编辑 data/live2d.toml，不用动本文件
+  ▸ 加模型 / 改台词 / 行为开关（含停靠角落 dockedPosition）：只编辑
+    data/live2d.toml，不用动本文件
       （台词含 [tips.welcome] 分时段欢迎 / [tips.idle] 闲聊 /
         [tips.copy] 复制提醒 / [tips.tap] 点击反应台词）
+  ▸ 气泡文本框的造型（纸条样式、尾巴、字体）在 assets/css/custom.css
+    的"看板娘气泡"一节，用 !important 覆盖库内联样式
   ▸ 点击反馈：有 hit_areas 的模型由库播对应动作；无 hit_areas 的模型
     （如 cat-black）由本文件的 tapFeedback 兜底随机播动作组，
     两种情况都会弹 [tips.tap] 台词气泡（250ms 内库未播动作才兜底）
@@ -11,8 +14,9 @@
       休息 / 切换衣服 / 切换模型，"关于"已在 items 过滤中移除）
   ▸ 图标：icon 字段填 SVG symbol 的 id；自定义图标先在 CUSTOM_ICONS 里
       注入 <symbol id="pet-icon-xxx">（前缀 pet-icon- 避免与库冲突）
-  ▸ 功能联动：挂 window.petAPI.on(事件, 回调)
-      事件：'model-changed'（模型切换）、'dark-changed'（深浅色变化）
+      ▸ 功能联动：挂 window.petAPI.on(事件, 回调)
+      事件：'model-changed'（模型/衣服切换，菜单点击与 petAPI 调用都会触发）、
+            'dark-changed'（深浅色变化）
       示例：夜间自动换睡衣模型 —— petAPI.on('dark-changed', e => {...})
   ▸ window.petAPI 方法（控制台可直接调用）：
       nextModel() / nextClothes() / toggleDark() / scrollTop() /
@@ -25,6 +29,7 @@
 
     /* ======== 1. 配置镜像（来源：data/live2d.toml） ======== */
     var BEHAVIOR = {
+      dockedPosition: {{ $cfg.behavior.dockedPosition | default "left" | jsonify | safeJS }},
       mobileDisplay: {{ $cfg.behavior.mobileDisplay | default false }},
       initialStatus: {{ $cfg.behavior.initialStatus | default "active" | jsonify | safeJS }},
       transitionTime: {{ $cfg.behavior.transitionTime | default 1000 }},
@@ -83,15 +88,21 @@
       bus.dispatchEvent(new CustomEvent(name, { detail: detail || {} }));
     }
 
+    // 包装库的切换方法：无论从菜单点击还是 petAPI 调用，都统一发 model-changed
+    function emitOnSwitch(method) {
+      return function () {
+        var r = method.apply(this, arguments);
+        emit('model-changed', { index: this.modelIndex });
+        return r;
+      };
+    }
+
     window.petAPI = {
       oml2d: null,
       config: { behavior: BEHAVIOR, models: MODELS },
-      nextModel: function () {
-        if (this.oml2d) { this.oml2d.loadNextModel(); emit('model-changed'); }
-      },
-      nextClothes: function () {
-        if (this.oml2d) { this.oml2d.loadNextModelClothes(); emit('model-changed'); }
-      },
+      // nextModel/nextClothes 直接走包装后的库方法（事件在包装里发，避免重复）
+      nextModel: function () { if (this.oml2d) this.oml2d.loadNextModel(); },
+      nextClothes: function () { if (this.oml2d) this.oml2d.loadNextModelClothes(); },
       toggleDark: toggleDark,
       scrollTop: function () { window.scrollTo({ top: 0, behavior: 'smooth' }); },
       on: bus.addEventListener.bind(bus),
@@ -130,16 +141,18 @@
       document.body.insertAdjacentHTML('afterbegin', CUSTOM_ICONS);
 
       var oml2d = OML2D.loadOml2d({
-        dockedPosition: 'right',          // 右下角停靠（库默认 left，必须显式指定）
+        dockedPosition: BEHAVIOR.dockedPosition,  // 停靠角落：left/right（配置在 data/live2d.toml）
         initialStatus: BEHAVIOR.initialStatus,
         mobileDisplay: BEHAVIOR.mobileDisplay,
         transitionTime: BEHAVIOR.transitionTime,
         primaryColor: '#3b82f6',          // 与 Congo 主题蓝色系一致
         sayHello: false,
         stageStyle: {
-          width: 300,
-          height: 400,
-          right: '60px',                  // 给返回顶部按钮（视口右侧 0-48px）让位
+          // 整体 0.75×：舞台与模型缩放（data/live2d.toml 的 scale=0.101）按比例配套
+          width: 225,
+          height: 300,
+          // 停靠侧的偏移由库强制固定（left 停靠 → left:0），stageStyle 改不了；
+          // 气泡/菜单的"造型与位置"统一在 assets/css/custom.css 里重设计（!important 覆盖库内联样式）
           zIndex: LAYER.zIndex
         },
         menus: {
@@ -160,6 +173,11 @@
       });
 
       window.petAPI.oml2d = oml2d;
+
+      // 统一事件出口：菜单点击 / petAPI 调用的模型切换都会发 model-changed
+      oml2d.loadNextModel = emitOnSwitch(oml2d.loadNextModel.bind(oml2d));
+      oml2d.loadNextModelClothes = emitOnSwitch(oml2d.loadNextModelClothes.bind(oml2d));
+
       emit('model-changed', { index: 0 });
 
       /* ======== 7. 点击反馈：台词气泡 + 无 hit 区模型的动作兜底 ========

@@ -16,8 +16,8 @@
 [[models]]
   id       = "cat-black"            # 小黑猫（hijiki），安静低调
   json     = "model.json"           # 模型入口文件（相对模型目录）
-  scale    = 0.135                  # 缩放（实测校准：画布 300x400 内完整显示）
-  position = [50, 80]               # 舞台内偏移 [x, y]（实测校准：居中贴底）
+  scale    = 0.101                  # 缩放（整体 0.75×：舞台 225x300 内完整显示）
+  position = [50, 80]               # 舞台内偏移 [x, y]（百分比，居中贴底）
 
 # 示例：以后想加模型，追加块即可（先把目录下载到 static/live2d/models/ 下）
 # [[models]]
@@ -68,6 +68,7 @@
 
 # ---------- 行为开关（后续功能的参数位） ----------
 [behavior]
+  dockedPosition  = "left"   # 停靠位置：left 左下角 | right 右下角
   mobileDisplay  = false    # 移动端隐藏；true 则手机上也显示（自动用移动端缩放）
   preloadAll     = true     # 预载全部动作，点击反应零延迟
   statusBar      = true     # 底部状态条（休息/换模型按钮）

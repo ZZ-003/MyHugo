@@ -59,7 +59,7 @@ menu:
       <svg class="fl-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>
     </a>
   </div>
-  <p class="fl-note">想交换友链？<a href="mailto:1397866418@qq.com">发邮件给我</a></p>
+  <p class="fl-note">看看你的<a href="mailto:1397866418@qq.com">邮箱</a></p>
 </div>
 <style>
   .friend-links {

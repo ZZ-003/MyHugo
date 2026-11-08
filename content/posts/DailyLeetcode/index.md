@@ -8,6 +8,8 @@ feature: "feature.jpg"
 summary: "一点一线一面"
 ---
 
+{{< katex >}}
+
 ## 力扣排名记录
 
 | 时间         | 排名      |

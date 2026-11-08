@@ -3,5 +3,23 @@
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
 
+{{/* KaTeX：主题只在页面调用 katex 短码时加载资源，且自带的
+  renderMathInElement(document.body) 不识别 $...$（默认只有 $$、\(、\[）。
+  这里在 DOM 就绪后再渲染一次，显式启用单美元界定符，
+  正文可直接写 $2^n$ 这类行内公式；$$...$$ 已由主题先渲染，不会重复。 */}}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (typeof renderMathInElement !== 'function') return;
+    renderMathInElement(document.body, {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '$', right: '$', display: false },
+        { left: '\\[', right: '\\]', display: true },
+        { left: '\\(', right: '\\)', display: false }
+      ]
+    });
+  });
+</script>
+
 {{/* Live2D 看板娘（配置在 data/live2d.toml，扩展说明见 live2d.html 顶部注释） */}}
 {{ partial "live2d.html" . }}

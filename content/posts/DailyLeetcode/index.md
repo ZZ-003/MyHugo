@@ -31,9 +31,7 @@ summary: "一点一线一面"
 | 2026.11.05 | 19, 384 |
 | 2026.11.06 | 18, 752 |
 | 2026.11.07 | 17, 690 |
-| <br />     | <br />  |
-
-<br />
+| 2026.11.08 | 16, 965 |
 
 ## 2026.10.31
 
@@ -533,5 +531,130 @@ public:
         size--;
     }
 };
+```
+
+## 2026.11.08
+
+学了 网格图 DFS 和 BFS
+
+1、**DFS** **通常**适用于 求网格图中的**连通块问题**，如，各个连通块的**大小**、连通块的**数量。**
+
+- 由之前的学习可知，”连通“ 这一性质通常也可以用 并查集 来解决。具体情况具体分析。
+
+2、**BFS** **通常**适用于 求网格图中**最短路径问题**，如，规定一起点，求它到各个点的最短路径问题
+
+- 有时起点会有多个，即 “**多源 BFS**”。只需在初始化 dis 和 que 时把它们全部放入即可
+- dis 的初始化可以是 -1，也可以是 INT\_MAX。两者都具有 dis 和 vis 双重信息。
+  - 大多数 BFS 是初始化为 -1 ，做题可以优先考虑（主观上感觉 -1 可以解决的，用 INT\_MAX 也能做）
+  - INT\_MAX 的初始化，目前就在 0-1 BFS 题型 (见下文) 中遇到过
+
+## 2026.11.09
+
+0-1 BFS
+[详细介绍](https://leetcode.cn/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/solutions/123916/shi-wang-ge-tu-zhi-shao-you-yi-tiao-you-xiao-lu-2/)
+
+- 这里的 $0$、$1$ 指的是两个格子之间的边权 / 代价，题目一般是求 起始点-终点 的最小权路径的长度
+- 首先我们要明确，BFS 的作用原理：对于源点 $s$ 以及任意两个节点 $u$ 和 $v$，如果 $dis(s,u) < dis(s,v)$，那么节点 $u$ 一定会比节点 $v$ 先被取出队列。
+  - 在常规的 BFS 中，**相邻**两个格子之间的边权 = 距离 = $1$，距离上先到达的点，从源点到该点的路径 \*\*一定 \*\*是到该点的最短路径，可以直接接入队列。这就保证了从队首到队尾的节点，它们与源点之间的距离是单调递增的。
+  - 然而如果 两个格子之间的边权 != 距离 时，就会出现如下的情况：因为此时我们要看权重而不是单纯的距离，距离上先到达的点，从源点到该点的路径**不一定**是到该点的最短路径，若是权重更大的点先入队，这就破坏了队列中的单增性。
+- 解决方式：使用双端队列，当任一节点 $u$ 被取出队列时，如果它到某节点 $v_i$ 的权值为 $0$ ，那么就将 $v_i$ 加入双端队列的「队首」。如果它到某节点 $v_j$ 的权值为 $1$ ，就将 $v_j$ 加入双端队列的「队尾」。这样一来，就可以保证了从队首到队尾的所有节点，它们与源点之间的权值是单调递增的。
+- $dis$ 的初始化是用 INT\_MAX
+
+<br />
+
+## HOT 100 NOTE ONE
+
+```C++
+矩阵旋转有三种基本操作：水平翻转（左右）H，垂直翻转（上下）V，转置（主对角线）T
+各操作对应矩阵arr m*n：
+    H：arr[i][j]=arr[i][n-j-1] or arr[i].reverse()
+    V：arr[i][j]=arr[m-i-1][j]
+    T：arr[i][j]=arr[j][i]
+组合：
+    T+H：顺时针旋转90
+    T+V：逆时针旋转90
+    H+V：旋转180
+    T+H+V：反转转置
+
+转置操作实操
+for (int i = 0; i < m; ++i) {
+    for (int j = 0; j < i; ++j) { // 修改对角线下元素
+        std::swap(arr[i][j], arr[j][i]);
+    }
+}
+
+for (int i = 0; i < m; ++i) {
+    for (int j = i + 1; j < n; ++j) { // 修改对角线上元素
+        std::swap(arr[i][j], arr[j][i]);
+    }
+}
+
+因为对角线元素位置不变，所以跳过对角线元素
+因为每次修改涉及两个元素，所以只修改对角线单边元素
+
+水平翻转实操
+for (int i = 0; i < m; ++i) {
+    std::reverse(arr[m].begin(), arr[m].end());
+}
+
+垂直翻转实操
+for (int i = 0; i < m / 2; ++i) {
+    for (int j = 0; j < n; ++j) {
+        std::swap(arr[i][j], arr[m - i - 1][j]);
+    }
+}
+
+T+H实操
+for (int i = 0; i < m; ++i) {
+    for (int j = 0; j < i; ++j) {
+        std::swap(arr[i][j], arr[j][i]);
+    }
+}
+for (int i = 0; i < m; ++i) {
+    std::reverse(arr[i].begin(), arr[i].end());
+}
+或者
+for (int i = 0; i < m; ++i) {
+    for (int j = i + 1; j < n; ++j) {
+        std::swap(arr[i][j], arr[j][i]);
+    }
+    std::reverse(arr[i].begin(), arr[i].end());
+}
+
+T+V实操
+for (int i = 0; i < m; ++i) {
+    for (int j = 0; j < i; ++j) {
+        std::swap(arr[i][j], arr[j][i]);
+    }
+}
+for (int i = 0; i < m / 2; ++i) {
+    for (int j = 0; j < n; ++j) {
+        std::swap(arr[i][j], arr[m - i - 1][j]);
+    }
+}
+
+H+V实操
+for (int i = 0; i < m; ++i) {
+    std::reverse(arr[i].begin(), arr[i].end());
+}
+for (int i = 0; i < m / 2; ++i) {
+    for (int j = 0; j < n; ++j) {
+        std::swap(arr[i][j], arr[m - i - 1][j]);
+    }
+}
+
+T+H+V实操
+for (int i = 0; i < m; ++i) {
+    for (int j = i + 1; j < n; ++j) {
+        std::swap(arr[i][j], arr[j][i]);
+    }
+    std::reverse(arr[i].begin(), arr[i].end());
+}
+for (int i = 0; i < m / 2; ++i) {
+    for (int j = 0; j < n; ++j) {
+        std::swap(arr[i][j], arr[m - i - 1][j]);
+    }
+}
+相关题目：48. 旋转图像
 ```
 

@@ -1,0 +1,37 @@
+{{- /* 文章阅读次数：样式与逻辑见 assets/js/views.js，后端见 api/views.js。
+   默认隐藏，接口返回数据后再显示，避免失败时留下空的 "阅读 0"。
+   enable = false 可关闭（用 ne 判断，避免 Hugo default 把 false 当成空值）。 */ -}}
+{{- $views := .Site.Params.views -}}
+{{- $enabled := true -}}
+{{- $api := "/api/views" -}}
+{{- with $views -}}
+  {{- $enabled = ne .enable false -}}
+  {{- with .api -}}
+    {{- $api = . -}}
+  {{- end -}}
+{{- end -}}
+{{- if $enabled }}
+  <span
+    id="page-views"
+    class="items-center"
+    style="display: none"
+    data-api="{{ $api }}"
+    data-slug="{{ strings.TrimSuffix "/" .RelPermalink }}"
+  >
+    <span class="px-2 text-primary-500" aria-hidden="true">&middot;</span>
+    <svg
+      class="me-1 inline-block h-[1em] w-[1em]"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+    <span>阅读&nbsp;<span data-views-count>0</span></span>
+  </span>
+{{- end }}

@@ -21,5 +21,15 @@
   });
 </script>
 
+{{/* 文章阅读计数前端（后端 api/views.js，配置见 params.toml [views]） */}}
+{{ with resources.Get "js/views.js" }}
+  {{ $viewsJS := . | minify | fingerprint (site.Params.fingerprintAlgorithm | default "sha256") }}
+  <script
+    src="{{ $viewsJS.RelPermalink }}"
+    integrity="{{ $viewsJS.Data.Integrity }}"
+    defer
+  ></script>
+{{ end }}
+
 {{/* Live2D 看板娘（配置在 data/live2d.toml，扩展说明见 live2d.html 顶部注释） */}}
 {{ partial "live2d.html" . }}

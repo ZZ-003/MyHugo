@@ -61,6 +61,12 @@ fingerprintAlgorithm = "sha256"
 [twikoo]
   envId = "https://twikoocomment-ten.vercel.app"
 
+# 文章阅读计数（后端 api/views.js + Upstash Redis，需在 Vercel 配置环境变量）
+# enable = false 可整体关闭；api 为计数接口路径
+[views]
+  enable = true
+  api = "/api/views"
+
 [list]
   showBreadcrumbs = false
   showSummary = true          # 【关键】改为 true，显示文章预览文字，不再只是一行标题
